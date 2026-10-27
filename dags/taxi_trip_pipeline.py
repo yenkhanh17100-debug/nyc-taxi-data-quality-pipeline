@@ -1,13 +1,17 @@
 import sys
-PROJECT_ROOT = "/Users/duytrung/Documents/project"
-if PROJECT_ROOT not in sys.path:
-        sys.path.insert(0, PROJECT_ROOT)
-from airflow.providers.standard.operators.bash import BashOperator
-from datetime import datetime,timedelta
-from airflow.sdk import task, DAG,task_group
-from src.discover import get_pending_months
 import subprocess
-from airflow.sdk.exceptions import AirflowFailException,AirflowException
+from pathlib import Path
+from datetime import datetime, timedelta
+
+from airflow.sdk import DAG, task, task_group
+from airflow.sdk.exceptions import AirflowException, AirflowFailException
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+if str(PROJECT_ROOT) not in sys.path:
+        sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.discover import get_pending_months
 
 
 with DAG(
