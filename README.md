@@ -15,15 +15,16 @@ This project demonstrates how to build a local data engineering pipeline that:
 
 The project uses NYC Yellow Taxi trip data from January to December 2025.
 
+
 ## 2. Tech Stack
 
- Technology | Purpose
-
- Python     | Pipeline development
- PySpark    | Large-scale data processing
- Apache Airflow | Workflow orchestration
- Apache Parquet | Raw and Silver data storage
- Git |        Version control
+| Technology | Purpose |
+|------------|---------|
+| Python | Pipeline development |
+| PySpark | Large-scale data processing |
+| Apache Airflow | Workflow orchestration |
+| Apache Parquet | Raw and Silver data storage |
+| Git | Version control |
 
 ## 3. Pipeline Architecture
 
@@ -128,10 +129,23 @@ project/
 
 ## 9. Running the Pipeline
 
-Install the Python dependencies:
+### Step 1: Create a Virtual Environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### Step 2: Install Dependencies
 
 ```bash
 python -m pip install -r requirements.txt
+```
+
+### Step 3: Create Data Directories
+
+```bash
+mkdir -p raw silver staging
 ```
 
 Place the NYC Yellow Taxi Parquet files in the `raw/` directory.
@@ -185,6 +199,7 @@ The Airflow DAG is defined in `dags/taxi_trip_pipeline.py` with DAG ID `nyc_taxi
 
 Airflow must be configured to load the project's DAG directory before running the workflow.
 
+
 ## 10. Sample Data Quality Results
 
 Example results for June 2025:
@@ -216,3 +231,13 @@ NYC Taxi & Limousine Commission (TLC) Trip Record Data:
 https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
 
 Raw datasets are excluded from the Git repository.
+
+## 13. Pipeline Screenshots
+
+### Airflow DAG Execution
+
+![Airflow DAG](docs/images/airflow_pipeline.png)
+
+### Data Quality Report — June 2025
+
+![Data Quality Report](docs/images/data_quality_report.png)
