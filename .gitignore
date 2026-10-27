@@ -1,0 +1,22 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Data files
+raw/
+silver/
+staging/
+
+# Airflow local files
+airflow.db
+airflow.cfg
+airflow-webserver.pid
+logs/
+
+# Secrets
+.env
+.env.*
