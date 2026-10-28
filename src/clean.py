@@ -32,7 +32,7 @@ def validate_silver(df_check, start_date, next_month_date, expected_rows=None):
                 f"Silver row count mismatch: "
                 f"expected={expected_rows}, actual={silver_read_count}"
             )
-            raise ValueError("Silver row count validation failed")
+            raise ValueError(f"Silver row count validation failed: expected= {expected_rows},actual ={silver_read_count}")
 
     outside_month = df_check.filter(
         col("tpep_pickup_datetime").isNull() |
@@ -43,10 +43,10 @@ def validate_silver(df_check, start_date, next_month_date, expected_rows=None):
     ).count()
 
     if outside_month > 0:
-        logging.error(
-            f"Silver month validation failed: {outside_month} invalid rows"
+        raise ValueError(
+            f"Silver month validation failed: "
+            f"{outside_month} invalid rows"
         )
-        raise ValueError("Silver month validation failed")
 
     logging.info(f"Silver rows validated: {silver_read_count}")
     logging.info("Silver month validation passed")
@@ -60,15 +60,15 @@ def validate_silver(df_check, start_date, next_month_date, expected_rows=None):
     ).count()
 
     if invalid_dropoff > 0:
-        logging.error(
-        f"Found {invalid_dropoff} invalid dropoff datetime rows"
-    )
-        raise ValueError("Silver dropoff datetime validation failed")
+        raise ValueError(
+            f"Silver dropoff datetime validation failed: "
+            f"{invalid_dropoff} invalid rows"
+        )
 
     logging.info("Silver dropoff datetime validation passed")
 
     invalid_distance_count = df_check.filter(
-    col("trip_distance") < 0
+    (col("trip_distance") < 0) | (col("trip_distance").isNull())
     ).count()
     invalid_distance_percentage = (
     invalid_distance_count / silver_read_count
@@ -78,13 +78,12 @@ def validate_silver(df_check, start_date, next_month_date, expected_rows=None):
             f"Invalid trip_distance rate: "
             f"{invalid_distance_percentage:.4f}%"
         )
-        raise ValueError("Silver distance validation failed")
+        raise ValueError(f"Silver distance validation failed:{invalid_distance_count} invalid row,rate ={invalid_distance_percentage:.4f}")
     else:
         logging.info(
             f"PASS: Invalid distance rate = "
             f"{invalid_distance_percentage:.4f}%"
         )
-
 # =========================================
 # MAIN PIPELINE
 # =========================================
@@ -392,7 +391,9 @@ def main():
             f"Successfully published Silver: {silver_destination}"
         )
         logging.info("Pipeline completed successfully")
-
+    except ValueError as e:
+        logging.error(f"Data quality validation failed: {e}")
+        sys.exit(2)
     finally:
         spark.stop()
 
