@@ -219,12 +219,30 @@ These results illustrate the difference between invalid numeric values and missi
 ## 11. Future Improvements
 
 - Export data quality reports to structured CSV or JSON files.
-- Add automated unit and integration tests.
+- Expand unit test coverage and add integration tests.
 - Improve Spark aggregation performance.
 - Add data quality thresholds and alerting.
 - Add pipeline monitoring and execution metrics.
 
-## 12. Data Source
+## 12. Automated Testing
+
+The project includes automated unit tests using pytest to validate the data discovery logic.
+
+The tests cover:
+- Detecting successfully processed Silver datasets.
+- Detecting Silver datasets missing the `_SUCCESS` marker.
+- Discovering valid monthly Raw Parquet files.
+- Identifying pending months that require processing.
+
+### Run Tests
+
+```bash
+python -m pytest test/test_discover.py -v
+```
+
+**Test Results:** 4 tests passed.
+
+## 13. Data Source
 
 NYC Taxi & Limousine Commission (TLC) Trip Record Data:
 
@@ -232,7 +250,7 @@ https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
 
 Raw datasets are excluded from the Git repository.
 
-## 13. Pipeline Screenshots
+## 14. Pipeline Screenshots
 
 ### Airflow DAG Execution
 
